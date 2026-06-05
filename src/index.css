@@ -110,6 +110,11 @@ button {
   box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.12);
 }
 
+.content-visibility-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: 420px;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

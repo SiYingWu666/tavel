@@ -9,6 +9,21 @@ npm install
 npm run dev
 ```
 
+如果想在手机上直接打开本地开发版，电脑和手机连接同一个 Wi-Fi 后运行：
+
+```bash
+npm run dev:host
+```
+
+然后在手机浏览器打开终端显示的局域网地址。生产构建预览可用：
+
+```bash
+npm run build
+npm run preview:host
+```
+
+项目已配置 PWA：手机浏览器打开后，可以通过“添加到主屏幕 / 安装应用”把 TripVote 当作独立 App 使用。
+
 构建检查：
 
 ```bash

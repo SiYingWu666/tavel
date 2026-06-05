@@ -13,14 +13,32 @@ import { SettingsPage } from './components/Settings/SettingsPage'
 import { VotingPage } from './components/Voting/VotingPage'
 import { useTripStore } from './hooks/useTripStore'
 
+const appSections: AppSection[] = ['dashboard', 'members', 'destinations', 'voting', 'random', 'activities', 'itinerary', 'budget', 'memories', 'final', 'settings']
+
+function getInitialSection(): AppSection {
+  const section = new URLSearchParams(window.location.search).get('section')
+  return appSections.includes(section as AppSection) ? (section as AppSection) : 'dashboard'
+}
+
 function App() {
-  const [active, setActive] = useState<AppSection>('dashboard')
+  const [active, setActive] = useState<AppSection>(getInitialSection)
   const store = useTripStore()
   const { plan, setPlan } = store
 
+  const navigate = (section: AppSection) => {
+    setActive(section)
+    const url = new URL(window.location.href)
+    if (section === 'dashboard') {
+      url.searchParams.delete('section')
+    } else {
+      url.searchParams.set('section', section)
+    }
+    window.history.replaceState(null, '', url)
+  }
+
   return (
-    <AppShell active={active} brand={plan.brand} onNavigate={(section) => setActive(section)}>
-      {active === 'dashboard' && <Dashboard plan={plan} onNavigate={(id) => setActive(id as AppSection)} />}
+    <AppShell active={active} brand={plan.brand} onNavigate={navigate}>
+      {active === 'dashboard' && <Dashboard plan={plan} onNavigate={(id) => navigate(id as AppSection)} />}
       {active === 'members' && <MembersPage plan={plan} setPlan={setPlan} />}
       {active === 'destinations' && <DestinationsPage plan={plan} setPlan={setPlan} />}
       {active === 'voting' && <VotingPage plan={plan} />}

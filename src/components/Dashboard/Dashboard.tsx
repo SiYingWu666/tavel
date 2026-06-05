@@ -88,6 +88,7 @@ export function Dashboard({ plan, onNavigate }: { plan: TripPlan; onNavigate: (i
               ['activities', '选择活动'],
               ['itinerary', '生成行程'],
               ['budget', '预算 AA 分摊'],
+              ['memories', '查看旅行记录'],
               ['final', '生成最终方案'],
             ].map(([id, label]) => <button key={id} onClick={() => onNavigate(id)} className="btn-secondary justify-between">{label}<span>→</span></button>)}
           </div>

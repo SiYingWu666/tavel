@@ -125,10 +125,10 @@ export function TripMemoriesPage({ plan, setPlan }: { plan: TripPlan; setPlan: R
       <div className="grid gap-4 xl:grid-cols-[1fr_420px]">
         <div className="space-y-4">
           {plan.tripMemories.map((memory) => (
-            <Panel key={memory.id}>
+            <Panel key={memory.id} className="content-visibility-auto">
               <div className="grid gap-4 md:grid-cols-[220px_1fr]">
                 <button type="button" onClick={() => setSelectedId(memory.id)} className="overflow-hidden rounded-lg bg-slate-100 text-left">
-                  <img src={memory.coverPhoto || plan.brand.groupCoverSrc} alt={memory.title} className="h-44 w-full object-cover transition hover:scale-[1.02]" />
+                  <img loading="lazy" src={memory.coverPhoto || plan.brand.groupCoverSrc} alt={memory.title} className="h-44 w-full object-cover transition hover:scale-[1.02]" />
                 </button>
                 <div>
                   <div className="flex flex-wrap items-start justify-between gap-3">
