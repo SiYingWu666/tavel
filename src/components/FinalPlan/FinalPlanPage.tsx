@@ -1,5 +1,5 @@
-import { Copy, FileText } from 'lucide-react'
-import type { TripPlan } from '../../types'
+import { Archive, Copy, FileText } from 'lucide-react'
+import type { TripMemory, TripPlan } from '../../types'
 import { generateAIAdvice } from '../../utils/aiAdvisor'
 import { calculateBudget } from '../../utils/budgetEngine'
 import { calculateDestinationDecisions } from '../../utils/decisionEngine'
@@ -11,12 +11,22 @@ function buildText(plan: TripPlan) {
   const best = plan.destinations.find((item) => item.id === plan.finalDestinationId) || decisions[0].destination
   const decision = decisions.find((item) => item.destination.id === best.id) || decisions[0]
   const budget = calculateBudget(plan.budgetItems, plan.members)
-  const advice = generateAIAdvice({ members: plan.members, destinations: plan.destinations, votes: plan.votes, activities: plan.activities, activityVotes: plan.activityVotes, itinerary: plan.itinerary, budgetItems: plan.budgetItems, randomResult: plan.randomResults[0] })
+  const advice = generateAIAdvice({
+    members: plan.members,
+    destinations: plan.destinations,
+    votes: plan.votes,
+    activities: plan.activities,
+    activityVotes: plan.activityVotes,
+    itinerary: plan.itinerary,
+    budgetItems: plan.budgetItems,
+    randomResult: plan.randomResults[0],
+  })
   const days = plan.itinerary.map((day) => {
     const analysis = analyzeDay(day, plan.activities)
     return `Day ${day.dayIndex}：${analysis.activities.map((activity) => activity.name).join(' + ') || '自由活动 / 休整'}`
   }).join('\n')
-  return `本次八人旅行推荐目的地：${best.name}
+
+  return `本次旅行推荐目的地：${best.name}
 推荐理由：${decision.recommendation}
 预计人均预算：${budget.average} 元
 建议天数：${best.suggestedDays} 天
@@ -34,13 +44,50 @@ ${days}
 更轻松建议：${advice.relaxedOption}`
 }
 
+function createMemoryFromPlan(plan: TripPlan): TripMemory {
+  const decisions = calculateDestinationDecisions(plan.destinations, plan.members, plan.votes)
+  const best = plan.destinations.find((item) => item.id === plan.finalDestinationId) || decisions[0].destination
+  const budget = calculateBudget(plan.budgetItems, plan.members)
+  const today = new Date().toISOString().slice(0, 10)
+  const highlights = [
+    `推荐理由：${decisions.find((item) => item.destination.id === best.id)?.strengths.slice(0, 2).join('、') || '综合均衡'}`,
+    `共识度：${decisions.find((item) => item.destination.id === best.id)?.consensus ?? 0}%`,
+    plan.randomResults[0] ? `随机挑战：${plan.randomResults[0].challengeCards.map((card) => card.title).join('、')}` : '可从最终方案继续补充照片和亮点',
+  ]
+
+  return {
+    id: `memory-archive-${Date.now()}`,
+    title: `${best.name}旅行方案归档`,
+    destination: best.name,
+    location: best.location,
+    startDate: today,
+    endDate: today,
+    coverPhoto: plan.brand.groupCoverSrc,
+    photos: [plan.brand.groupCoverSrc],
+    members: plan.members.map((member) => member.name),
+    highlights,
+    budgetPerPerson: budget.average,
+    days: best.suggestedDays,
+    tags: best.tags,
+    source: 'archived-plan',
+    createdAt: new Date().toISOString(),
+    linkedDestinationId: best.id,
+  }
+}
+
 export function FinalPlanPage({ plan, setPlan }: { plan: TripPlan; setPlan: React.Dispatch<React.SetStateAction<TripPlan>> }) {
   const decisions = calculateDestinationDecisions(plan.destinations, plan.members, plan.votes)
   const bestId = plan.finalDestinationId || decisions[0].destination.id
   const text = buildText(plan)
+
+  const archivePlan = () => {
+    const memory = createMemoryFromPlan(plan)
+    setPlan((current) => ({ ...current, tripMemories: [memory, ...current.tripMemories] }))
+  }
+
   return (
     <>
-      <SectionHeader title="最终方案" desc="自动生成可发到微信群的旅行建议，并保留省钱、刺激、轻松三个改法。" />
+      <SectionHeader title="最终方案" desc="自动生成可发到微信群的旅行建议，也可以把当前方案归档进旅行记录。" />
       <div className="grid gap-4 xl:grid-cols-[340px_1fr]">
         <Panel>
           <h2 className="font-semibold">选择最终目的地</h2>
@@ -52,6 +99,9 @@ export function FinalPlanPage({ plan, setPlan }: { plan: TripPlan; setPlan: Reac
               </button>
             ))}
           </div>
+          <button className="btn-primary mt-4 w-full" onClick={archivePlan}>
+            <Archive size={16} /> 一键归档到旅行记录
+          </button>
         </Panel>
         <Panel>
           <div className="mb-4 flex flex-wrap items-center justify-between gap-2">

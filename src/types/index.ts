@@ -222,7 +222,38 @@ export interface AIAdvice {
   provider: 'local-rules' | 'future-api'
 }
 
+export interface BrandSettings {
+  appName: string
+  groupName: string
+  groupSubtitle: string
+  groupIconSrc: string
+  groupCoverSrc: string
+  allowRename: boolean
+}
+
+export type TripMemorySource = 'manual' | 'imported' | 'archived-plan'
+
+export interface TripMemory {
+  id: string
+  title: string
+  destination: string
+  location: string
+  startDate: string
+  endDate: string
+  coverPhoto: string
+  photos: string[]
+  members: string[]
+  highlights: string[]
+  budgetPerPerson: number
+  days: number
+  tags: string[]
+  source: TripMemorySource
+  createdAt: string
+  linkedDestinationId?: string
+}
+
 export interface TripPlan {
+  brand: BrandSettings
   groupName: string
   members: Member[]
   destinations: Destination[]
@@ -232,6 +263,7 @@ export interface TripPlan {
   itinerary: ItineraryDay[]
   budgetItems: BudgetItem[]
   randomResults: RandomTripResult[]
+  tripMemories: TripMemory[]
   finalDestinationId?: string
 }
 

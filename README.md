@@ -1,6 +1,6 @@
 # TripVote
 
-八人旅行共识决策助手。当前版本是本地单机演示版，使用 mock 数据和 localStorage，不需要后端，也不会调用真实 AI API。
+五人帮 CLUB·5 的旅行共识决策助手。当前版本是本地单机演示版，使用 mock 数据和 localStorage，不需要后端，也不会调用真实 AI API。
 
 ## 启动
 
@@ -26,7 +26,17 @@ npm run build
 - 行程安排：支持轻松版、特种兵版、随机版行程生成，并检测强度、耗时和预算风险。
 - 预算分摊：支持预算项编辑、分类统计、AA 分摊、部分成员参与分摊和个人超预算提示。
 - 最终方案：生成适合发到微信群的旅行方案文本，并支持复制。
+- 旅行记录：展示以往旅行的照片、地点、时间、成员、花费、亮点和标签；支持手动新增、JSON 导入导出、从当前最终方案一键归档。
 - 设置 / 数据管理：支持重置 Demo、清空 localStorage、导出 JSON、导入 JSON。
+
+## 团体品牌
+
+- 默认团体名称：`五人帮 CLUB·5`
+- 默认副标题：空
+- 团体封面：`public/brand/club5-cover.jpg`
+- 小尺寸图标：`public/brand/club5-icon.png`
+
+设置页可以替换 App 显示名、团体名、副标题、图标路径和封面路径。未来如果推广到 AppStore，可以继续沿用这层 `BrandSettings` 做白标或品牌化。
 
 ## AI 决策助手
 
@@ -73,6 +83,8 @@ src/
 ## 未来多人在线版设计
 
 当前版本通过 `src/hooks/useTripStore.ts` 使用 localStorage。未来接 Supabase / Firebase / 自建后端时，建议保留 `TripPlan` 数据模型，把 `useTripStore` 替换为远程数据源，并增加登录、团队邀请码、成员权限、实时投票和最终确认。
+
+旅行记录当前保存在 `TripPlan.tripMemories`。如果未来接云端，建议图片上传到对象存储，`TripMemory.photos` 和 `TripMemory.coverPhoto` 只保存 URL。
 
 建议数据库表：
 

@@ -6,7 +6,9 @@ import type {
   Destination,
   ItineraryDay,
   Member,
+  BrandSettings,
   TripPlan,
+  TripMemory,
   TravelStyle,
   Vote,
 } from '../types'
@@ -197,7 +199,56 @@ export const budgetItems: BudgetItem[] = [
   { id: 'b-5', name: '随机挑战基金', category: '随机活动预算', amount: 800, splitAll: false, participants: members.slice(0, 5).map((m) => m.id) },
 ]
 
+export const defaultBrandSettings: BrandSettings = {
+  appName: 'TripVote',
+  groupName: '五人帮 CLUB·5',
+  groupSubtitle: '',
+  groupIconSrc: '/brand/club5-icon.png',
+  groupCoverSrc: '/brand/club5-cover.jpg',
+  allowRename: true,
+}
+
+export const tripMemories: TripMemory[] = [
+  {
+    id: 'memory-chongqing-2025',
+    title: '山城夜游和火锅局',
+    destination: '重庆',
+    location: '重庆 / 渝中',
+    startDate: '2025-07-12',
+    endDate: '2025-07-15',
+    coverPhoto: '/brand/club5-cover.jpg',
+    photos: ['/brand/club5-cover.jpg'],
+    members: members.slice(0, 8).map((member) => member.name),
+    highlights: ['洪崖洞夜景', '八人火锅局', '临时抽签决定晚饭'],
+    budgetPerPerson: 2300,
+    days: 4,
+    tags: ['美食', '城市探索', '夜景'],
+    source: 'manual',
+    createdAt: '2025-07-16T12:00:00.000Z',
+    linkedDestinationId: 'd-chongqing',
+  },
+  {
+    id: 'memory-xiamen-2024',
+    title: '海边骑行和半天发呆',
+    destination: '厦门',
+    location: '福建 / 厦门',
+    startDate: '2024-08-03',
+    endDate: '2024-08-06',
+    coverPhoto: '/brand/club5-cover.jpg',
+    photos: ['/brand/club5-cover.jpg'],
+    members: members.slice(0, 6).map((member) => member.name),
+    highlights: ['环岛路骑行', '沙坡尾拍照', '临时取消早起计划'],
+    budgetPerPerson: 2100,
+    days: 4,
+    tags: ['海边', '休闲', '拍照'],
+    source: 'manual',
+    createdAt: '2024-08-07T12:00:00.000Z',
+    linkedDestinationId: 'd-xiamen',
+  },
+]
+
 export const initialTripPlan: TripPlan = {
+  brand: defaultBrandSettings,
   groupName: '暑假八人旅行计划',
   members,
   destinations,
@@ -207,6 +258,7 @@ export const initialTripPlan: TripPlan = {
   itinerary,
   budgetItems,
   randomResults: [],
+  tripMemories,
   finalDestinationId: 'd-qinghai',
 }
 
