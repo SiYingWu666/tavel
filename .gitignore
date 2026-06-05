@@ -12,6 +12,7 @@ dist
 dist-ssr
 *.local
 .codex-remote-attachments/
+.netlify/
 
 # Editor directories and files
 .vscode/*
